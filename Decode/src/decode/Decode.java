@@ -32,16 +32,16 @@ public class Decode {
         String in = args[0];
         String out = args[1];
         Decode decode = new Decode(in, out);
-        FileInputStream inFile = new FileInputStream(in);
+        FileInputStream fileIn = new FileInputStream(in);
         
-        BitInputStream inputStream = new BitInputStream(inFile);
+        BitInputStream inputStream = new BitInputStream(fileIn);
         decode.fillTable(inputStream);
         Element root = decode.huffMan(decode.priority);
         
         while(inputStream.readBit() != -1)
             decode.writeFile(root, inputStream);
         
-        inFile.close();
+        fileIn.close();
         inputStream.close();
     }
     
@@ -51,20 +51,20 @@ public class Decode {
     }
     
     public void writeFile(Element root, BitInputStream inputStream) throws IOException{
-        FileOutputStream fos = new FileOutputStream(new File(out));
+        FileOutputStream fileOut = new FileOutputStream(new File(out));
         Node node = (Node) root.getData();
         int bit = inputStream.readBit();
         while(bit != -1){
             if(bit == 1){
                 node = node.getRight();
                 if(node.isLeaf()){
-                    fos.write(node.getBit());
+                    fileOut.write(node.getBit());
                     node = (Node) root.getData();
                 }
             }else{
                 node = node.getLeft();
                 if(node.isLeaf()){
-                    fos.write(node.getBit());
+                    fileOut.write(node.getBit());
                     node = (Node) root.getData();
                 }
             }
