@@ -1,4 +1,4 @@
-
+package encode;
 import java.io.IOException;
 import java.io.OutputStream;
 

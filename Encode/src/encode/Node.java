@@ -11,15 +11,24 @@ package encode;
  */
 public class Node {
     
-    private String bit = null;
+    private int bit;
     private Node left = null;
     private Node right = null;
+    private boolean isLeaf = false;
 
-    public String getBit() {
+    public void setIsLeaf(boolean isLeaf) {
+        this.isLeaf = isLeaf;
+    }
+    
+    public boolean isLeaf(){
+        return this.isLeaf;
+    }
+
+    public int getBit() {
         return bit;
     }
 
-    public void setBit(String bit) {
+    public void setBit(int bit) {
         this.bit = bit;
     }
 

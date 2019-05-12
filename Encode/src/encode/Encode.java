@@ -15,8 +15,8 @@ import java.util.Scanner;
 import javax.lang.model.util.Elements;
 
 public class Encode {
-    
-    private Integer[] frequencyArray = new Integer[256];
+
+    private int[] frequencyArray = new int[256];
     private String[] bitcode = new String[256];
     private static PQHeap priority = new PQHeap(256);
 
@@ -48,16 +48,17 @@ public class Encode {
 
         for (int i = 0; i < frequencyArray.length; i++) {
             bitOutput.writeInt(frequencyArray[i]);
+
         }
-        
+
         Integer bits = inputStream.read();
 
         while (bits != -1) {
-            
+
             for (char c : encoded[bits].toCharArray()) {
                 if (c == '1') {
                     bitOutput.writeBit(1);
-                } else if(c == '0'){
+                } else if (c == '0') {
                     bitOutput.writeBit(0);
                 }
             }
@@ -76,47 +77,34 @@ public class Encode {
 
         //while the lenght of the file is less than our traversal counter
         while (lenght > i) {
-            //read the next byte in the file
-            int readbyte = inFile.read();
-            //if our read byte is not null
-            if (frequencyArray[readbyte] != null) {
-                //read
-                frequencyArray[readbyte] = frequencyArray[readbyte] + 1;
-            } else {
-                frequencyArray[readbyte] = 1;
-            }
+            int readByte = inFile.read();
+            frequencyArray[readByte] = frequencyArray[readByte]+1;
+            
             i++;
         }
 
         //fill the priority queue
         for (Integer j = 0; j < frequencyArray.length; j++) {
             Node node = new Node();
-            int frequency = 0;
-            node.setBit(j.toString());
-
-            if (frequencyArray[j] != null) {
-                frequency = frequencyArray[j];
-            }
-
-            priority.insert(new Element(frequency, node));
+            node.setBit(j);
+            node.setIsLeaf(true);
+            priority.insert(new Element(frequencyArray[j], node));
         }
 
     }
-    
+
     public void recursiveFindTreePath(Node node, String code) {
 
-        
-        if (node != null ) {
-            
+        if (node != null) {
+
             recursiveFindTreePath(node.getLeft(), code + "0");
-            int treePathPlacement = Integer.parseInt(node.getBit()) ;
-            bitcode[treePathPlacement] = code;
+            bitcode[node.getBit()] = code;
             recursiveFindTreePath(node.getRight(), code + "1");
         }
 
     }
-    
-    public String[] search(Node root){
+
+    public String[] search(Node root) {
         recursiveFindTreePath(root, "");
         return bitcode;
     }
@@ -128,10 +116,12 @@ public class Encode {
         for (int i = 0; i < (n - 1); i++) {
             Node z = new Node();
             
+
             Element x = q.extractMin();
             z.setLeft((Node) x.getData());
             Element y = q.extractMin();
             z.setRight((Node) y.getData());
+            
 
             int key = x.getKey() + y.getKey();
             q.insert(new Element(key, z));

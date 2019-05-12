@@ -57,14 +57,14 @@ public class Decode {
         while(bit != -1){
             if(bit == 1){
                 node = node.getRight();
-                if(node.getBit() != null){
-                    fos.write(Integer.parseInt(node.getBit()));
+                if(node.isLeaf()){
+                    fos.write(node.getBit());
                     node = (Node) root.getData();
                 }
             }else{
                 node = node.getLeft();
-                if(node.getBit() != null){
-                    fos.write(Integer.parseInt(node.getBit()));
+                if(node.isLeaf()){
+                    fos.write(node.getBit());
                     node = (Node) root.getData();
                 }
             }
@@ -82,7 +82,8 @@ public class Decode {
         for (Integer j = 0; j < frequencyArray.length; j++) {
             Node node = new Node();
             int frequency = 0;
-            node.setBit(j.toString());
+            node.setBit(j);
+            node.setIsLeaf(true);
 
             if (frequencyArray[j] != 0) {
                 frequency = frequencyArray[j];
