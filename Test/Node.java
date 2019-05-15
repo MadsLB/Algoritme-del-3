@@ -5,13 +5,14 @@
  */
 
 
-/**
- *
- * @author Mads
+/*
+ * Mads Lykke Bach | Mabac16
+ * Tobias Ahrenschneider Sztuk | Toszt17
+ * Julie Dittmann Weimar Andersen | Julan17
  */
 public class Node {
     
-
+	
     private int byte_;
     private Node left = null;
     private Node right = null;
