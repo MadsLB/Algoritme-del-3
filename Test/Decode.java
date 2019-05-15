@@ -38,8 +38,8 @@ public class Decode {
         decode.fillTable(inputStream);
         Element root = decode.huffMan(decode.priority);
         
-        //while(inputStream.readBit() != -1)
-            decode.writeFile(root, inputStream);
+
+        decode.writeFile(root, inputStream);
         
         fileIn.close();
         inputStream.close();
@@ -61,18 +61,17 @@ public class Decode {
 
         int leafvisit = 0;
         while(bit != -1 && freqSum > leafvisit){
-	//System.out.println(bit);
             if(bit == 1){
                 node = node.getRight();
                 if(node.isLeaf()){
-                    fileOut.write(node.getBit());
+                    fileOut.write(node.getByte());
                     node = (Node) root.getData();
                     leafvisit++;
                 }
             }else{
                 node = node.getLeft();
                 if(node.isLeaf()){
-                    fileOut.write(node.getBit());
+                    fileOut.write(node.getByte());
                     node = (Node) root.getData();
                     leafvisit++;
                 }
@@ -80,7 +79,8 @@ public class Decode {
             bit = inputStream.readBit();
         }
         
-        inputStream.close();
+        //inputStream.close();
+        fileOut.close();
     }
     
     public void fillTable(BitInputStream input) throws IOException{
@@ -90,15 +90,9 @@ public class Decode {
         
         for (Integer j = 0; j < frequencyArray.length; j++) {
             Node node = new Node();
-            int frequency = 0;
-            node.setBit(j);
+            node.setByte(j);
             node.setIsLeaf(true);
-
-            if (frequencyArray[j] != 0) {
-                frequency = frequencyArray[j];
-            }
-
-            priority.insert(new Element(frequency, node));
+            priority.insert(new Element(frequencyArray[j], node));
         }
     }
     

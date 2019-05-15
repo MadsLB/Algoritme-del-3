@@ -65,7 +65,7 @@ public class Encode {
             bits = inputStream.read();
         }
         outputStream.close();
-	inputStream.close();
+	    inputStream.close();
 
 	
     }
@@ -88,7 +88,7 @@ public class Encode {
         //fill the priority queue
         for (int j = 0; j < frequencyArray.length; j++) {
             Node node = new Node();
-            node.setBit(j);
+            node.setByte(j);
             node.setIsLeaf(true);
             priority.insert(new Element(frequencyArray[j], node));
         }
@@ -98,7 +98,7 @@ public class Encode {
     public void recursiveFindTreePath(Node node, String code) {
         if (node != null) {
             recursiveFindTreePath(node.getLeft(), code + "0");
-            bitcode[node.getBit()] = code;
+            bitcode[node.getByte()] = code;
             recursiveFindTreePath(node.getRight(), code + "1");
         }
 

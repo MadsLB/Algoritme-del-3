@@ -12,7 +12,7 @@
 public class Node {
     
 
-    private int bit;
+    private int byte_;
     private Node left = null;
     private Node right = null;
     private boolean isLeaf = false;
@@ -25,12 +25,12 @@ public class Node {
         return this.isLeaf;
     }
 
-    public int getBit() {
-        return bit;
+    public int getByte() {
+        return byte_;
     }
 
-    public void setBit(int bit) {
-        this.bit = bit;
+    public void setByte(int bit) {
+        this.bit = byte_;
     }
 
 
