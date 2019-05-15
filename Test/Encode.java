@@ -129,9 +129,11 @@ public class Encode {
     public void recursiveFindTreePath(Node node, String code) {
         if (node != null) {
             recursiveFindTreePath(node.getLeft(), code + "0");
-            //only when the bottom are met and a leaf hos no children
+            //only when it hits a leaf
             //then the code will be written in the bitcode array at the byte place of the array
-            bitcode[node.get_Byte()] = code; 
+            if (node.isLeaf()){
+                bitcode[node.get_Byte()] = code; 
+            }
             recursiveFindTreePath(node.getRight(), code + "1");
         }
 
