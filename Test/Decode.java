@@ -22,6 +22,7 @@ public class Decode {
     //String to represent the decoded message.
     private String decoded;
 	//frequency array to keep track of the amount of times a letter appears
+    //the place is the corrensponding to the a "signs". 
     private int[] frequencyArray = new int[256];
 	//priority queue for our table when building the huffman tree
     private PQHeap priority = new PQHeap(256);
@@ -68,34 +69,34 @@ public class Decode {
         Node node = (Node) root.getData();
 		
 		/*
-		* Specify an integer that keeps track of the lenght of our frequencyArray.
+		* reads the toltal number of "byte" to write in file,
+        * as encode puts exstra 0 at the end if a byte is not complet
 		*/
-        int bit = inputStream.readBit();
-        int freqSum = 0;
+        int freqSum = 0; //freguency sum fo all 256 place in the array
         for (int i = 0; i < frequencyArray.length; i++){
             freqSum = freqSum + frequencyArray[i];
         }
-
+        int bit = inputStream.readBit();
 		/*
 		* 
 		* Traverse the built huffman tree, and  determine if the node visited during traversal, starting at the root, 
-		* is a left or right child and if this node is marked as a child.
-		* Write the byte contained in the child to the file and increment the counter.
-		*
+		* is a left or right child and if this node is marked as a leaf.
+		* Write the byte contained in the child to the file and increment the counter to which the while loop stops
+		* when the leafvisit hits the number of the reguency sum, as all has been written in file.
 		*/
         int leafvisit = 0;
         while(bit != -1 && freqSum > leafvisit){
             if(bit == 1){
                 node = node.getRight();
                 if(node.isLeaf()){
-                    fileOut.write(node.getByte());
+                    fileOut.write(node.get_Byte());
                     node = (Node) root.getData();
                     leafvisit++;
                 }
             }else{
                 node = node.getLeft();
                 if(node.isLeaf()){
-                    fileOut.write(node.getByte());
+                    fileOut.write(node.get_Byte());
                     node = (Node) root.getData();
                     leafvisit++;
                 }
@@ -112,27 +113,31 @@ public class Decode {
 	Method used to fill the table during decoding
 	*/
     public void fillTable(BitInputStream input) throws IOException{
+
+        //reads the frequency table of the start at the file form the encoder
+
         for (int i = 0; i < frequencyArray.length; i++) {
             frequencyArray[i] = input.readInt();
         }
         
 		//Populate the priority queue of our PQHeap with the Elements
-	    //For each letter in our textfile, we create a new Element containing a new Node object and a frequency array.
-		//The Node contains whether or not it is a leaf, a byte, and the amount of times said byte occurs. 
+	    //For each array place, there is create a new Element containing a new Node object and the frequency as key.
+		//The Node contains whether or not it is a leaf and byte. 
+        //In this case all nodes are leaf, as they are used to repressent a "letter"
         for (Integer j = 0; j < frequencyArray.length; j++) {
             Node node = new Node();
-            node.setByte(j);
+            node.set_Byte(j);
             node.setIsLeaf(true);
             priority.insert(new Element(frequencyArray[j], node));
         }
     }
     
-/*
+	/*
 	* Implementation of Huffman's algorithm
-	* Function that builds binary tree by getting the 2 smallest/least occuring data and building a new Element by combining their data.
+	* Function that builds binary tree by getting the 2 smallest/least occuring key and building a new Element by combining their keys.
 	* Each element contains a Node in the binary tree.
-	* Thus building "up" the priority queue with elements untill there is no two elements that have had their data combined.
-	* This function thus returns the smallest or least occuring object of data as the Element that will become the root of our binary tree.
+	* Thus building "up" the priority queue with elements untill there is no longer two elements to combine.
+	* This function thus returns the smallest and only Element, that have the node as the root of the huffman.
 	*/
     public Element huffMan(PQHeap heap) {
         int n = heap.lenght();

@@ -22,6 +22,10 @@ public class Encode {
 	//PQHeap priority queue to get which Element to write as a Node next.
     private static PQHeap priority = new PQHeap(256);
 
+    //for both the bitcode and frequencyArray, the place is the corrensponding
+    //to the input when the file is read. 
+
+
     private String in, out;
 	
 	
@@ -58,9 +62,11 @@ public class Encode {
         BitOutputStream outputStream = new BitOutputStream(fileOut);
         FileInputStream inputStream = new FileInputStream(inFile);
 
-		//As long as there are letters in our freqencyArray to write to the output file
+        
+		//Writes the frequency array at the start of the file
+        
         for (int i = 0; i < frequencyArray.length; i++) {
-			//write the byte on frequencyArray[i]'th place in the arrya to file.
+			//write the frecency on frequencyArray[i]'th place in the arrya to file.
             outputStream.writeInt(frequencyArray[i]);
         }
 
@@ -71,10 +77,8 @@ public class Encode {
 			//for each character c[StringArray] we send to the Encoded class, we use the .writeBit() method depending on whether or not its binary representation is 0 or 1.
             for (char c : encoded[bits].toCharArray()) {
                 if (c == '1') {
-			//System.out.println("1");
                     outputStream.writeBit(1);
                 } else if (c == '0') {
-			//System.out.println("0");
                     outputStream.writeBit(0);
                 }
             }
@@ -98,6 +102,7 @@ public class Encode {
 
         //while the lenght of the file is less than our traversal counter
 		//fill up the frequencyArray with letters and increment by +1 every time it occurs.
+        //the place is the corrensponding to what the read methode returns
         while(lenght > i) {
             int readByte = inFile.read();
             frequencyArray[readByte] = frequencyArray[readByte]+1;
@@ -105,11 +110,12 @@ public class Encode {
         }
 
         //populate the priority queue of our PQHeap with the Elements
-	    //For each letter in our textfile, we create a new Element containing a new Node object and a frequency array.
-		//The Node contains whether or not it is a leaf, a byte, and the amount of times said byte occurs. 
+	    //For each array place, there is create a new Element containing a new Node object and the frequency as key.
+		//The Node contains whether or not it is a leaf and byte. 
+        //In this case all nodes are leaf, as they are used to repressent a "letter"
         for (int j = 0; j < frequencyArray.length; j++) {
             Node node = new Node();
-            node.setByte(j);
+            node.set_Byte(j);
             node.setIsLeaf(true);
             priority.insert(new Element(frequencyArray[j], node));
         }
@@ -123,7 +129,9 @@ public class Encode {
     public void recursiveFindTreePath(Node node, String code) {
         if (node != null) {
             recursiveFindTreePath(node.getLeft(), code + "0");
-            bitcode[node.getByte()] = code;
+            //only when the bottom are met and a leaf hos no children
+            //then the code will be written in the bitcode array at the byte place of the array
+            bitcode[node.get_Byte()] = code; 
             recursiveFindTreePath(node.getRight(), code + "1");
         }
 
@@ -138,10 +146,10 @@ public class Encode {
 
 	/*
 	* Implementation of Huffman's algorithm
-	* Function that builds binary tree by getting the 2 smallest/least occuring data and building a new Element by combining their data.
+	* Function that builds binary tree by getting the 2 smallest/least occuring key and building a new Element by combining their keys.
 	* Each element contains a Node in the binary tree.
-	* Thus building "up" the priority queue with elements untill there is no two elements that have had their data combined.
-	* This function thus returns the smallest or least occuring object of data as the Element that will become the root of our binary tree.
+	* Thus building "up" the priority queue with elements untill there is no longer two elements to combine.
+	* This function thus returns the smallest and only Element, that have the node as the root of the huffman.
 	*/
     public Element huffMan(PQHeap heap) {
         int n = heap.lenght();

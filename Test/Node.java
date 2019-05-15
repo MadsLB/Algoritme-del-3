@@ -13,7 +13,7 @@
 public class Node {
     
 	
-    private int byte_;
+    private int byte_; //the code of a sign as int
     private Node left = null;
     private Node right = null;
     private boolean isLeaf = false;
@@ -26,12 +26,12 @@ public class Node {
         return this.isLeaf;
     }
 
-    public int getByte() {
+    public int get_Byte() {
         return byte_;
     }
 
-    public void setByte(int bit) {
-        this.bit = byte_;
+    public void set_Byte(int byte_) {
+        this.byte_ = byte_;
     }
 
 
